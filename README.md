@@ -54,6 +54,8 @@ All four providers are listed there:
 
 Model availability is determined by each provider and your account/subscription tier. You can enter any model name in the settings.
 
+> **Note:** Currently only OpenAI OAuth (ChatGPT subscription) has been tested and verified. Other providers and auth modes are implemented but not yet tested.
+
 ## Build from Source
 
 1. git clone https://github.com/kirinhcl/zotero-copilot.git
