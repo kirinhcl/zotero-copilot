@@ -43,15 +43,16 @@ All four providers are listed there:
 - OpenAI and Anthropic: Use OAuth with your ChatGPT or Claude subscription, or an API key.
 - Gemini and Custom: Use an API key only.
 
-## Supported Models
+## Supported Providers
 
-| Provider | Auth Mode | Models |
-|----------|-----------|--------|
-| OpenAI | OAuth (ChatGPT subscription) | o4-mini, o3, gpt-4o, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano |
-| OpenAI | API key | Any model from the OpenAI API |
-| Anthropic | OAuth or API key | claude-sonnet-4-20250514, claude-opus-4, etc. |
-| Google Gemini | API key | gemini-2.0-flash, gemini-2.5-pro, etc. |
-| Custom | API key | Any OpenAI-compatible model |
+| Provider | Auth Options |
+|----------|-------------|
+| OpenAI | ChatGPT subscription (OAuth) or API key |
+| Anthropic | Claude subscription (OAuth) or API key |
+| Google Gemini | API key |
+| Custom | API key (any OpenAI-compatible endpoint) |
+
+Model availability is determined by each provider and your account/subscription tier. You can enter any model name in the settings.
 
 ## Build from Source
 
