@@ -1,0 +1,12 @@
+pref("provider", "openai");
+pref("openai.model", "o4-mini");
+pref("anthropic.model", "claude-sonnet-4-20250514");
+pref("gemini.model", "gemini-2.0-flash");
+pref("custom.model", "gpt-4o-mini");
+pref("custom.endpoint", "https://api.openai.com");
+pref("temperature", "0.7");
+pref("targetLanguage", "zh-CN");
+pref("maxTokens", 4096);
+pref("apiEndpoint", "https://api.openai.com");
+pref("apiKey", "");
+pref("model", "gpt-4o-mini");

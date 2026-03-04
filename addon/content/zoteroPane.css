@@ -1,0 +1,168 @@
+.zotero-copilot-panel-root {
+  padding: 0;
+}
+
+.zc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
+
+.zc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.zc-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #1f2937;
+}
+
+.zc-settings {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.zc-messages {
+  flex: 1;
+  min-height: 160px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #dce2eb;
+  border-radius: 8px;
+}
+
+.zc-message-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zc-message-row.user {
+  align-items: flex-end;
+}
+
+.zc-message-row.assistant {
+  align-items: flex-start;
+}
+
+.zc-message-bubble {
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.zc-message-bubble.user {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+.zc-message-bubble.assistant {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.zc-message-bubble pre {
+  margin: 6px 0;
+  padding: 6px;
+  overflow: auto;
+  border-radius: 6px;
+  background: #111827;
+  color: #f9fafb;
+}
+
+.zc-message-bubble code {
+  font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+.zc-message-bubble blockquote {
+  margin: 6px 0;
+  border-left: 3px solid #9ca3af;
+  padding-left: 8px;
+}
+
+.zc-message-bubble ul {
+  margin: 6px 0;
+  padding-left: 16px;
+}
+
+.zc-copy-button {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border-radius: 6px;
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.zc-hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  background: #ffffff;
+}
+
+.zc-hint {
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.zc-input-row {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+
+.zc-input {
+  flex: 1;
+  min-height: 68px;
+  max-height: 180px;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  background: #ffffff;
+}
+
+.zc-send {
+  border: 1px solid #1d4ed8;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.zc-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
