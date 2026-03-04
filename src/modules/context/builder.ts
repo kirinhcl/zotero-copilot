@@ -126,7 +126,8 @@ export function buildPrompt(
     annotations,
   ].join("\n");
 
-  const userPrompt = selectedText.trim() || "Use the paper context to continue.";
+  const userPrompt =
+    selectedText.trim() || "Use the paper context to continue.";
   return [
     { role: "system", content: systemPrompt },
     { role: "user", content: userPrompt },

@@ -1,5 +1,10 @@
 import { getCredential, getAccessToken, isOAuthExpired } from "../auth/storage";
-import { getOpenAIAccessToken, isOpenAIOAuthActive, getAnthropicAccessToken, isAnthropicOAuthActive } from "../auth/oauth";
+import {
+  getOpenAIAccessToken,
+  isOpenAIOAuthActive,
+  getAnthropicAccessToken,
+  isAnthropicOAuthActive,
+} from "../auth/oauth";
 import { getProvider, type ProviderId, type AuthMode } from "./providers";
 
 export interface ChatMessage {
@@ -18,7 +23,12 @@ function getActiveProviderId(): ProviderId {
     "extensions.zotero.zoterocopliot.provider",
     true,
   ) as string | undefined;
-  if (raw === "openai" || raw === "anthropic" || raw === "gemini" || raw === "custom") {
+  if (
+    raw === "openai" ||
+    raw === "anthropic" ||
+    raw === "gemini" ||
+    raw === "custom"
+  ) {
     return raw;
   }
   return "openai";
@@ -56,7 +66,7 @@ async function resolveToken(
   if (!token) {
     throw new Error(
       `No API key configured for ${getProvider(providerId).label}. ` +
-      "Open Zotero Copilot preferences to set up authentication.",
+        "Open Zotero Copilot preferences to set up authentication.",
     );
   }
   return { token };
@@ -86,10 +96,20 @@ export function streamChat(
   const provider = getProvider(providerId);
   const authMode = getAuthMode(providerId);
   const model = getActiveModel(providerId);
-  const maxTokensRaw = Zotero.Prefs.get("extensions.zotero.zoterocopliot.maxTokens", true) as number | undefined;
-  const maxTokens = Number.isFinite(maxTokensRaw) ? (maxTokensRaw as number) : 4096;
-  const tempRaw = Zotero.Prefs.get("extensions.zotero.zoterocopliot.temperature", true) as string | undefined;
-  const temperature = Number.isFinite(Number.parseFloat(tempRaw || "")) ? Number.parseFloat(tempRaw!) : 0.7;
+  const maxTokensRaw = Zotero.Prefs.get(
+    "extensions.zotero.zoterocopliot.maxTokens",
+    true,
+  ) as number | undefined;
+  const maxTokens = Number.isFinite(maxTokensRaw)
+    ? (maxTokensRaw as number)
+    : 4096;
+  const tempRaw = Zotero.Prefs.get(
+    "extensions.zotero.zoterocopliot.temperature",
+    true,
+  ) as string | undefined;
+  const temperature = Number.isFinite(Number.parseFloat(tempRaw || ""))
+    ? Number.parseFloat(tempRaw!)
+    : 0.7;
 
   resolveToken(providerId, authMode)
     .then(({ token, accountId }) => {
@@ -97,7 +117,13 @@ export function streamChat(
 
       const url = provider.buildEndpoint(authMode);
       const headers = provider.buildHeaders(token, authMode, accountId);
-      const body = provider.formatBody(model, messages, maxTokens, temperature, authMode);
+      const body = provider.formatBody(
+        model,
+        messages,
+        maxTokens,
+        temperature,
+        authMode,
+      );
 
       let accumulated = "";
       let partialBuffer = "";
@@ -127,7 +153,11 @@ export function streamChat(
             dataPayload = trimmed.slice(5).trim();
           }
 
-          const result = provider.parseSSEChunk(currentEvent, dataPayload, authMode);
+          const result = provider.parseSSEChunk(
+            currentEvent,
+            dataPayload,
+            authMode,
+          );
           currentEvent = "";
 
           if (result.error) {
@@ -157,11 +187,19 @@ export function streamChat(
             processedLength = responseText.length;
             if (next) processSSEData(next);
           };
-          xmlhttp.onerror = () => fail(new Error("Network error while contacting LLM endpoint."));
-          xmlhttp.ontimeout = () => fail(new Error("Request timeout while waiting for model response."));
-          xmlhttp.onabort = () => { isAborted = true; };
+          xmlhttp.onerror = () =>
+            fail(new Error("Network error while contacting LLM endpoint."));
+          xmlhttp.ontimeout = () =>
+            fail(
+              new Error("Request timeout while waiting for model response."),
+            );
+          xmlhttp.onabort = () => {
+            isAborted = true;
+          };
         },
-        cancellerReceiver: (cancel: () => void) => { requestCanceller = cancel; },
+        cancellerReceiver: (cancel: () => void) => {
+          requestCanceller = cancel;
+        },
       })
         .then((xmlhttp) => {
           if (isDone || isAborted) return;

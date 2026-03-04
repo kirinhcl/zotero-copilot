@@ -1,11 +1,17 @@
 <linkset>
   <html:link rel="localization" href="__addonRef__-preferences.ftl" />
 </linkset>
-<groupbox id="zotero-prefpane-__addonRef__" onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })">
+<groupbox
+  id="zotero-prefpane-__addonRef__"
+  onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window })"
+>
   <label><html:h2 data-l10n-id="pref-title"></html:h2></label>
 
   <hbox align="center" class="pref-row">
-    <html:label for="zotero-prefpane-__addonRef__-provider" data-l10n-id="pref-provider"></html:label>
+    <html:label
+      for="zotero-prefpane-__addonRef__-provider"
+      data-l10n-id="pref-provider"
+    ></html:label>
     <menulist id="zotero-prefpane-__addonRef__-provider" preference="provider">
       <menupopup>
         <menuitem value="openai" label="OpenAI" />
@@ -20,106 +26,219 @@
 
   <!-- ═══ OpenAI ═══ -->
   <groupbox>
-    <label><html:h3 style="margin:4px 0">OpenAI</html:h3></label>
+    <label><html:h3 style="margin: 4px 0">OpenAI</html:h3></label>
 
     <hbox align="center" class="pref-row">
-      <html:button id="zotero-prefpane-__addonRef__-openai-oauth-btn"
-        onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('openaiOAuth', { window })"
-        style="padding:6px 16px;border-radius:6px;background:#4f46e5;color:#fff;border:none;cursor:pointer;font-weight:500">
+      <html:button
+        id="zotero-prefpane-__addonRef__-openai-oauth-btn"
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('openaiOAuth', { window })
+        "
+        style="
+          padding: 6px 16px;
+          border-radius: 6px;
+          background: #4f46e5;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+          font-weight: 500;
+        "
+      >
         Sign in with ChatGPT
       </html:button>
-      <html:span id="zotero-prefpane-__addonRef__-openai-oauth-status"
-        style="margin-left:12px;color:#6b7280;font-size:0.9em"></html:span>
+      <html:span
+        id="zotero-prefpane-__addonRef__-openai-oauth-status"
+        style="margin-left: 12px; color: #6b7280; font-size: 0.9em"
+      ></html:span>
     </hbox>
 
-    <hbox align="center" class="pref-row" style="margin-top:2px">
-      <html:label style="color:#9ca3af;font-size:0.85em">— or —</html:label>
-    </hbox>
-
-    <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-api-key" style="min-width:70px"></html:label>
-      <html:input id="zotero-prefpane-__addonRef__-openai-key" type="password" style="flex:1"
-        placeholder="sk-..." />
-      <html:button onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', { window, provider: 'openai' })"
-        style="margin-left:8px;padding:4px 12px" data-l10n-id="pref-save-key"></html:button>
+    <hbox align="center" class="pref-row" style="margin-top: 2px">
+      <html:label style="color: #9ca3af; font-size: 0.85em">— or —</html:label>
     </hbox>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-model" style="min-width:70px"></html:label>
-      <html:input type="text" preference="openai.model" style="flex:1" />
+      <html:label
+        data-l10n-id="pref-api-key"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input
+        id="zotero-prefpane-__addonRef__-openai-key"
+        type="password"
+        style="flex: 1"
+        placeholder="sk-..."
+      />
+      <html:button
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', {
+            window,
+            provider: 'openai',
+          })
+        "
+        style="margin-left: 8px; padding: 4px 12px"
+        data-l10n-id="pref-save-key"
+      ></html:button>
+    </hbox>
+
+    <hbox align="center" class="pref-row">
+      <html:label
+        data-l10n-id="pref-model"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input type="text" preference="openai.model" style="flex: 1" />
     </hbox>
   </groupbox>
 
   <!-- ═══ Anthropic ═══ -->
   <groupbox>
-    <label><html:h3 style="margin:4px 0">Anthropic (Claude)</html:h3></label>
+    <label><html:h3 style="margin: 4px 0">Anthropic (Claude)</html:h3></label>
 
     <hbox align="center" class="pref-row">
-      <html:button id="zotero-prefpane-__addonRef__-anthropic-oauth-btn"
-        onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('anthropicOAuth', { window })"
-        style="padding:6px 16px;border-radius:6px;background:#d97706;color:#fff;border:none;cursor:pointer;font-weight:500">
+      <html:button
+        id="zotero-prefpane-__addonRef__-anthropic-oauth-btn"
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('anthropicOAuth', {
+            window,
+          })
+        "
+        style="
+          padding: 6px 16px;
+          border-radius: 6px;
+          background: #d97706;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+          font-weight: 500;
+        "
+      >
         Sign in with Claude
       </html:button>
-      <html:span id="zotero-prefpane-__addonRef__-anthropic-oauth-status"
-        style="margin-left:12px;color:#6b7280;font-size:0.9em"></html:span>
+      <html:span
+        id="zotero-prefpane-__addonRef__-anthropic-oauth-status"
+        style="margin-left: 12px; color: #6b7280; font-size: 0.9em"
+      ></html:span>
     </hbox>
 
-    <hbox align="center" class="pref-row" style="margin-top:2px">
-      <html:label style="color:#9ca3af;font-size:0.85em">— or —</html:label>
-    </hbox>
-
-    <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-api-key" style="min-width:70px"></html:label>
-      <html:input id="zotero-prefpane-__addonRef__-anthropic-key" type="password" style="flex:1"
-        placeholder="sk-ant-..." />
-      <html:button onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', { window, provider: 'anthropic' })"
-        style="margin-left:8px;padding:4px 12px" data-l10n-id="pref-save-key"></html:button>
+    <hbox align="center" class="pref-row" style="margin-top: 2px">
+      <html:label style="color: #9ca3af; font-size: 0.85em">— or —</html:label>
     </hbox>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-model" style="min-width:70px"></html:label>
-      <html:input type="text" preference="anthropic.model" style="flex:1" />
+      <html:label
+        data-l10n-id="pref-api-key"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input
+        id="zotero-prefpane-__addonRef__-anthropic-key"
+        type="password"
+        style="flex: 1"
+        placeholder="sk-ant-..."
+      />
+      <html:button
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', {
+            window,
+            provider: 'anthropic',
+          })
+        "
+        style="margin-left: 8px; padding: 4px 12px"
+        data-l10n-id="pref-save-key"
+      ></html:button>
+    </hbox>
+
+    <hbox align="center" class="pref-row">
+      <html:label
+        data-l10n-id="pref-model"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input type="text" preference="anthropic.model" style="flex: 1" />
     </hbox>
   </groupbox>
 
   <!-- ═══ Google Gemini ═══ -->
   <groupbox>
-    <label><html:h3 style="margin:4px 0">Google Gemini</html:h3></label>
+    <label><html:h3 style="margin: 4px 0">Google Gemini</html:h3></label>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-api-key" style="min-width:70px"></html:label>
-      <html:input id="zotero-prefpane-__addonRef__-gemini-key" type="password" style="flex:1"
-        placeholder="AIza..." />
-      <html:button onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', { window, provider: 'gemini' })"
-        style="margin-left:8px;padding:4px 12px" data-l10n-id="pref-save-key"></html:button>
+      <html:label
+        data-l10n-id="pref-api-key"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input
+        id="zotero-prefpane-__addonRef__-gemini-key"
+        type="password"
+        style="flex: 1"
+        placeholder="AIza..."
+      />
+      <html:button
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', {
+            window,
+            provider: 'gemini',
+          })
+        "
+        style="margin-left: 8px; padding: 4px 12px"
+        data-l10n-id="pref-save-key"
+      ></html:button>
     </hbox>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-model" style="min-width:70px"></html:label>
-      <html:input type="text" preference="gemini.model" style="flex:1" />
+      <html:label
+        data-l10n-id="pref-model"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input type="text" preference="gemini.model" style="flex: 1" />
     </hbox>
   </groupbox>
 
   <!-- ═══ Custom ═══ -->
   <groupbox>
-    <label><html:h3 style="margin:4px 0">Custom (OpenAI-compatible)</html:h3></label>
+    <label
+      ><html:h3 style="margin: 4px 0"
+        >Custom (OpenAI-compatible)</html:h3
+      ></label
+    >
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-api-endpoint" style="min-width:70px"></html:label>
-      <html:input type="text" preference="custom.endpoint" style="flex:1"
-        placeholder="https://api.example.com" />
+      <html:label
+        data-l10n-id="pref-api-endpoint"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input
+        type="text"
+        preference="custom.endpoint"
+        style="flex: 1"
+        placeholder="https://api.example.com"
+      />
     </hbox>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-api-key" style="min-width:70px"></html:label>
-      <html:input id="zotero-prefpane-__addonRef__-custom-key" type="password" style="flex:1" />
-      <html:button onclick="Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', { window, provider: 'custom' })"
-        style="margin-left:8px;padding:4px 12px" data-l10n-id="pref-save-key"></html:button>
+      <html:label
+        data-l10n-id="pref-api-key"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input
+        id="zotero-prefpane-__addonRef__-custom-key"
+        type="password"
+        style="flex: 1"
+      />
+      <html:button
+        onclick="
+          Zotero.__addonInstance__.hooks.onPrefsEvent('saveApiKey', {
+            window,
+            provider: 'custom',
+          })
+        "
+        style="margin-left: 8px; padding: 4px 12px"
+        data-l10n-id="pref-save-key"
+      ></html:button>
     </hbox>
 
     <hbox align="center" class="pref-row">
-      <html:label data-l10n-id="pref-model" style="min-width:70px"></html:label>
-      <html:input type="text" preference="custom.model" style="flex:1" />
+      <html:label
+        data-l10n-id="pref-model"
+        style="min-width: 70px"
+      ></html:label>
+      <html:input type="text" preference="custom.model" style="flex: 1" />
     </hbox>
   </groupbox>
 
@@ -127,12 +246,18 @@
 
   <!-- ═══ Common ═══ -->
   <hbox align="center" class="pref-row">
-    <html:label data-l10n-id="pref-temperature" style="min-width:70px"></html:label>
-    <html:input type="text" preference="temperature" style="flex:1" />
+    <html:label
+      data-l10n-id="pref-temperature"
+      style="min-width: 70px"
+    ></html:label>
+    <html:input type="text" preference="temperature" style="flex: 1" />
   </hbox>
 
   <hbox align="center" class="pref-row">
-    <html:label data-l10n-id="pref-target-language" style="min-width:70px"></html:label>
+    <html:label
+      data-l10n-id="pref-target-language"
+      style="min-width: 70px"
+    ></html:label>
     <menulist preference="targetLanguage">
       <menupopup>
         <menuitem value="zh-CN" label="简体中文 (zh-CN)" />

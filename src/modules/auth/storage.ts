@@ -21,7 +21,9 @@ function prefKey(providerId: string): string {
 
 export function getCredential(providerId: string): AuthCredential | null {
   try {
-    const raw = Zotero.Prefs.get(prefKey(providerId), true) as string | undefined;
+    const raw = Zotero.Prefs.get(prefKey(providerId), true) as
+      | string
+      | undefined;
     if (!raw) return null;
     return JSON.parse(raw) as AuthCredential;
   } catch {

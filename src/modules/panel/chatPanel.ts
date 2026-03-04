@@ -34,17 +34,23 @@ function escapeHTML(input: string) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
 
 function markdownToHTML(text: string) {
   const escaped = escapeHTML(text);
-  const fenced = escaped.replace(/```([\s\S]*?)```/g, "<pre><code>$1</code></pre>");
+  const fenced = escaped.replace(
+    /```([\s\S]*?)```/g,
+    "<pre><code>$1</code></pre>",
+  );
   const inlineCode = fenced.replace(/`([^`]+)`/g, "<code>$1</code>");
   const bold = inlineCode.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   const italic = bold.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-  const quote = italic.replace(/^&gt;\s?(.*)$/gm, "<blockquote>$1</blockquote>");
+  const quote = italic.replace(
+    /^&gt;\s?(.*)$/gm,
+    "<blockquote>$1</blockquote>",
+  );
   const lists = quote.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
   const wrappedLists = lists.replace(/(<li>[\s\S]*?<\/li>)/g, "<ul>$1</ul>");
   return wrappedLists.replace(/\n/g, "<br/>");
@@ -64,13 +70,18 @@ function pushMessage(itemID: number, message: ChatMessage) {
   session.push(message);
 }
 
-function createMessageBubble(doc: Document, role: "user" | "assistant", content: string) {
+function createMessageBubble(
+  doc: Document,
+  role: "user" | "assistant",
+  content: string,
+) {
   const row = doc.createElement("div");
   row.className = `zc-message-row ${role}`;
 
   const bubble = doc.createElement("div");
   bubble.className = `zc-message-bubble ${role}`;
-  bubble.innerHTML = role === "assistant" ? markdownToHTML(content) : escapeHTML(content);
+  bubble.innerHTML =
+    role === "assistant" ? markdownToHTML(content) : escapeHTML(content);
   row.appendChild(bubble);
 
   if (role === "assistant" && content.trim()) {
@@ -101,7 +112,11 @@ function renderSession(state: PanelState) {
       continue;
     }
     state.messages.appendChild(
-      createMessageBubble(getPanelDocument(state), message.role, message.content),
+      createMessageBubble(
+        getPanelDocument(state),
+        message.role,
+        message.content,
+      ),
     );
   }
   state.messages.scrollTop = state.messages.scrollHeight;
@@ -177,7 +192,9 @@ function buildChatMessages(
     role: "system",
     content: `You are an academic research copilot. Keep answers grounded in the current paper.\n\nPaper context:\n${getPaperContext(item)}`,
   };
-  const session = getSession(itemID).filter((message) => message.role !== "system");
+  const session = getSession(itemID).filter(
+    (message) => message.role !== "system",
+  );
   return [systemMessage, ...session, { role: "user", content: userText }];
 }
 
@@ -207,7 +224,12 @@ function sendMessage(state: PanelState) {
   addThinking(state);
   state.send.disabled = true;
 
-  const messages = buildChatMessages(parsed.action, userText, state.item, state.itemID);
+  const messages = buildChatMessages(
+    parsed.action,
+    userText,
+    state.item,
+    state.itemID,
+  );
   let latest = "";
 
   const controller = streamChat(messages, {
@@ -270,8 +292,9 @@ function buildPanelUI(body: HTMLDivElement): PanelState {
   settingsButton.textContent = "⚙";
   settingsButton.title = getString("open-settings");
   settingsButton.addEventListener("click", () => {
-    const el = Zotero.getMainWindow()?.document
-      .getElementById("menu_preferences") as any;
+    const el = Zotero.getMainWindow()?.document.getElementById(
+      "menu_preferences",
+    ) as any;
     el?.doCommand?.();
   });
 
@@ -360,7 +383,9 @@ export function registerChatPanelSection() {
         return true;
       }
 
-      const targetItem = item?.isRegularItem() ? item : item?.parentItem || item;
+      const targetItem = item?.isRegularItem()
+        ? item
+        : item?.parentItem || item;
       if (!targetItem || !targetItem.id) {
         state.item = null;
         state.itemID = null;

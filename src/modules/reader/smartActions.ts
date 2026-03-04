@@ -23,7 +23,7 @@ function escapeHTML(input: string) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
 
@@ -37,7 +37,10 @@ function getParentItem(reader: _ZoteroTypes.ReaderInstance): Zotero.Item {
   return reader._item.parentItem || reader._item;
 }
 
-function collectAnnotationText(reader: _ZoteroTypes.ReaderInstance, ids: string[]) {
+function collectAnnotationText(
+  reader: _ZoteroTypes.ReaderInstance,
+  ids: string[],
+) {
   const attachment = reader._item;
   const annotations = attachment.getAnnotations(false);
   const rows: string[] = [];
@@ -68,7 +71,11 @@ function removeController(controller: { abort: () => void }) {
   addon.data.activeAbortControllers.delete(controller);
 }
 
-function renderNoteHTML(action: SlashCommand, selectedText: string, responseText: string) {
+function renderNoteHTML(
+  action: SlashCommand,
+  selectedText: string,
+  responseText: string,
+) {
   const escapedAction = escapeHTML(action);
   const escapedSelection = escapeHTML(selectedText).replace(/\n/g, "<br/>");
   const escapedResponse = escapeHTML(responseText).replace(/\n/g, "<br/>");
@@ -100,7 +107,11 @@ function runSelectionAction(options: {
   onDone: (text: string) => void;
   onError: (error: Error) => void;
 }) {
-  const messages = buildPrompt(options.action, options.selectedText, options.parentItem);
+  const messages = buildPrompt(
+    options.action,
+    options.selectedText,
+    options.parentItem,
+  );
   const controller = streamChat(messages, {
     onChunk: (text) => {
       options.onChunk(text);
@@ -209,7 +220,9 @@ function createPopupContainer(
   return container;
 }
 
-function handleSelectionPopup(event: _ZoteroTypes.Reader.EventParams<"renderTextSelectionPopup">) {
+function handleSelectionPopup(
+  event: _ZoteroTypes.Reader.EventParams<"renderTextSelectionPopup">,
+) {
   const { reader, doc, params, append } = event;
   const selectedText = params.annotation?.text?.trim();
   if (!selectedText) {
@@ -279,7 +292,11 @@ function handleAnnotationContextMenu(
       if (!selectedText) {
         return;
       }
-      runContextMenuAction(reader, contextMenuActionMap.summarize, selectedText);
+      runContextMenuAction(
+        reader,
+        contextMenuActionMap.summarize,
+        selectedText,
+      );
     },
   });
   append({

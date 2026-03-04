@@ -2,7 +2,11 @@ export type ProviderId = "openai" | "anthropic" | "gemini" | "custom";
 
 export type AuthMode = "oauth" | "api";
 
-export interface SSEResult { content: string; done: boolean; error?: string }
+export interface SSEResult {
+  content: string;
+  done: boolean;
+  error?: string;
+}
 
 export interface ProviderDef {
   id: ProviderId;
@@ -11,7 +15,11 @@ export interface ProviderDef {
   defaultModel: string;
   apiKeyUrl: string;
   buildEndpoint: (authMode: AuthMode) => string;
-  buildHeaders: (token: string, authMode: AuthMode, accountId?: string) => Record<string, string>;
+  buildHeaders: (
+    token: string,
+    authMode: AuthMode,
+    accountId?: string,
+  ) => Record<string, string>;
   formatBody: (
     model: string,
     messages: Array<{ role: string; content: string }>,
@@ -19,7 +27,11 @@ export interface ProviderDef {
     temperature: number,
     authMode: AuthMode,
   ) => string;
-  parseSSEChunk: (eventLine: string, dataLine: string, authMode: AuthMode) => SSEResult;
+  parseSSEChunk: (
+    eventLine: string,
+    dataLine: string,
+    authMode: AuthMode,
+  ) => SSEResult;
 }
 
 function openaiChatCompletionsBody(
@@ -28,7 +40,13 @@ function openaiChatCompletionsBody(
   maxTokens: number,
   temperature: number,
 ): string {
-  return JSON.stringify({ model, stream: true, messages, max_tokens: maxTokens, temperature });
+  return JSON.stringify({
+    model,
+    stream: true,
+    messages,
+    max_tokens: maxTokens,
+    temperature,
+  });
 }
 
 function codexResponsesBody(
@@ -60,48 +78,77 @@ function codexResponsesBody(
 
 const EMPTY: SSEResult = { content: "", done: false };
 
-function chatCompletionsParseSSE(_eventLine: string, dataLine: string): SSEResult {
+function chatCompletionsParseSSE(
+  _eventLine: string,
+  dataLine: string,
+): SSEResult {
   const data = dataLine.trim();
   if (!data) return EMPTY;
   if (data === "[DONE]") return { content: "", done: true };
 
   try {
     const parsed = JSON.parse(data);
-    if (parsed?.error?.message) return { content: "", done: true, error: parsed.error.message };
+    if (parsed?.error?.message)
+      return { content: "", done: true, error: parsed.error.message };
     const delta = parsed?.choices?.[0]?.delta;
     if (!delta) return EMPTY;
-    if (typeof delta.content === "string") return { content: delta.content, done: false };
+    if (typeof delta.content === "string")
+      return { content: delta.content, done: false };
     if (Array.isArray(delta.content)) {
-      const text = delta.content.map((p: any) => (typeof p?.text === "string" ? p.text : "")).join("");
+      const text = delta.content
+        .map((p: any) => (typeof p?.text === "string" ? p.text : ""))
+        .join("");
       return { content: text, done: false };
     }
-  } catch { void 0; }
+  } catch {
+    void 0;
+  }
   return EMPTY;
 }
 
-function codexResponsesParseSSE(eventLine: string, dataLine: string): SSEResult {
+function codexResponsesParseSSE(
+  eventLine: string,
+  dataLine: string,
+): SSEResult {
   const data = dataLine.trim();
   if (!data) return EMPTY;
 
   try {
     const parsed = JSON.parse(data);
-    if (parsed?.error?.message) return { content: "", done: true, error: parsed.error.message };
+    if (parsed?.error?.message)
+      return { content: "", done: true, error: parsed.error.message };
 
     const evType = eventLine.trim() || parsed?.type || "";
-    if (evType === "response.output_text.delta" || evType === "response.text.delta") {
-      return { content: typeof parsed.delta === "string" ? parsed.delta : "", done: false };
+    if (
+      evType === "response.output_text.delta" ||
+      evType === "response.text.delta"
+    ) {
+      return {
+        content: typeof parsed.delta === "string" ? parsed.delta : "",
+        done: false,
+      };
     }
     if (evType === "response.completed" || evType === "response.done") {
       return { content: "", done: true };
     }
     if (evType === "error") {
-      return { content: "", done: true, error: parsed?.message || "Codex API error" };
+      return {
+        content: "",
+        done: true,
+        error: parsed?.message || "Codex API error",
+      };
     }
-  } catch { void 0; }
+  } catch {
+    void 0;
+  }
   return EMPTY;
 }
 
-function openaiParseSSE(_eventLine: string, dataLine: string, authMode: AuthMode): SSEResult {
+function openaiParseSSE(
+  _eventLine: string,
+  dataLine: string,
+  authMode: AuthMode,
+): SSEResult {
   return authMode === "oauth"
     ? codexResponsesParseSSE(_eventLine, dataLine)
     : chatCompletionsParseSSE(_eventLine, dataLine);
@@ -148,22 +195,35 @@ function anthropicFormatBody(
   return JSON.stringify(body);
 }
 
-function anthropicParseSSE(_eventLine: string, dataLine: string, _authMode: AuthMode): SSEResult {
+function anthropicParseSSE(
+  _eventLine: string,
+  dataLine: string,
+  _authMode: AuthMode,
+): SSEResult {
   const data = dataLine.trim();
   if (!data) return EMPTY;
 
   try {
     const parsed = JSON.parse(data);
     if (parsed.type === "error") {
-      return { content: "", done: true, error: parsed.error?.message || "Anthropic API error" };
+      return {
+        content: "",
+        done: true,
+        error: parsed.error?.message || "Anthropic API error",
+      };
     }
-    if (parsed.type === "content_block_delta" && parsed.delta?.type === "text_delta") {
+    if (
+      parsed.type === "content_block_delta" &&
+      parsed.delta?.type === "text_delta"
+    ) {
       return { content: parsed.delta.text || "", done: false };
     }
     if (parsed.type === "message_stop") {
       return { content: "", done: true };
     }
-  } catch { void 0; }
+  } catch {
+    void 0;
+  }
   return EMPTY;
 }
 
@@ -215,7 +275,8 @@ export const PROVIDERS: Record<ProviderId, ProviderDef> = {
       };
       if (authMode === "oauth") {
         headers["Authorization"] = `Bearer ${token}`;
-        headers["anthropic-beta"] = "oauth-2025-04-20,interleaved-thinking-2025-05-14";
+        headers["anthropic-beta"] =
+          "oauth-2025-04-20,interleaved-thinking-2025-05-14";
         headers["user-agent"] = "claude-cli/2.1.2 (external, cli)";
       } else {
         headers["x-api-key"] = token;
@@ -252,7 +313,12 @@ export const PROVIDERS: Record<ProviderId, ProviderDef> = {
     defaultModel: "gpt-4o-mini",
     apiKeyUrl: "",
     buildEndpoint() {
-      const endpoint = (Zotero.Prefs.get("extensions.zotero.zoterocopliot.custom.endpoint", true) as string || "").trim();
+      const endpoint = (
+        (Zotero.Prefs.get(
+          "extensions.zotero.zoterocopliot.custom.endpoint",
+          true,
+        ) as string) || ""
+      ).trim();
       const base = endpoint.endsWith("/") ? endpoint.slice(0, -1) : endpoint;
       return `${base}/v1/chat/completions`;
     },

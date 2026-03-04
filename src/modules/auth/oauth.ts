@@ -17,7 +17,8 @@ let pendingState: string | null = null;
 let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
 function randomString(length: number): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
   const bytes = new Uint8Array(length);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => chars[b % chars.length]).join("");
@@ -29,12 +30,21 @@ function base64Url(buffer: ArrayBuffer): string {
   for (let i = 0; i < bytes.length; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
-async function generatePKCE(): Promise<{ verifier: string; challenge: string }> {
+async function generatePKCE(): Promise<{
+  verifier: string;
+  challenge: string;
+}> {
   const verifier = randomString(43);
-  const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(verifier),
+  );
   return { verifier, challenge: base64Url(hash) };
 }
 
@@ -77,7 +87,11 @@ function clearPending() {
 
 function stopServer() {
   if (activeServer) {
-    try { activeServer.close(); } catch { void 0; }
+    try {
+      activeServer.close();
+    } catch {
+      void 0;
+    }
     activeServer = null;
   }
   // Reject any pending promise BEFORE clearing — prevents dangling awaits
@@ -87,7 +101,11 @@ function stopServer() {
   clearPending();
 }
 
-function parseHttpRequest(raw: string): { method: string; path: string; query: URLSearchParams } {
+function parseHttpRequest(raw: string): {
+  method: string;
+  path: string;
+  query: URLSearchParams;
+} {
   const firstLine = raw.split("\r\n")[0] || raw.split("\n")[0] || "";
   const parts = firstLine.split(" ");
   const method = parts[0] || "GET";
@@ -98,7 +116,12 @@ function parseHttpRequest(raw: string): { method: string; path: string; query: U
   return { method, path, query: new URLSearchParams(queryStr) };
 }
 
-function buildHttpResponse(status: number, statusText: string, contentType: string, body: string): string {
+function buildHttpResponse(
+  status: number,
+  statusText: string,
+  contentType: string,
+  body: string,
+): string {
   const headers = [
     `HTTP/1.1 ${status} ${statusText}`,
     `Content-Type: ${contentType}`,
@@ -113,23 +136,37 @@ function buildHttpResponse(status: number, statusText: string, contentType: stri
 function startCallbackServer(): Promise<void> {
   return new Promise((resolve, reject) => {
     try {
-      const server = Cc["@mozilla.org/network/server-socket;1"].createInstance(Ci.nsIServerSocket);
+      const server = Cc["@mozilla.org/network/server-socket;1"].createInstance(
+        Ci.nsIServerSocket,
+      );
       server.init(OAUTH_PORT, true, 1);
       activeServer = server;
 
       server.asyncListen({
-        onSocketAccepted(_serv: nsIServerSocket, transport: nsISocketTransport) {
+        onSocketAccepted(
+          _serv: nsIServerSocket,
+          transport: nsISocketTransport,
+        ) {
           const input = transport.openInputStream(0, 0, 0);
-          const sInput = Cc["@mozilla.org/scriptableinputstream;1"].createInstance(Ci.nsIScriptableInputStream);
+          const sInput = Cc[
+            "@mozilla.org/scriptableinputstream;1"
+          ].createInstance(Ci.nsIScriptableInputStream);
           sInput.init(input);
           const output = transport.openOutputStream(0, 0, 0);
 
-          const pump = Cc["@mozilla.org/network/input-stream-pump;1"].createInstance(Ci.nsIInputStreamPump);
+          const pump = Cc[
+            "@mozilla.org/network/input-stream-pump;1"
+          ].createInstance(Ci.nsIInputStreamPump);
           pump.init(input, 0, 0, false);
 
           pump.asyncRead({
             onStartRequest() {},
-            onDataAvailable(_req: any, stream: nsIInputStream, _offset: number, count: number) {
+            onDataAvailable(
+              _req: any,
+              stream: nsIInputStream,
+              _offset: number,
+              count: number,
+            ) {
               const data = sInput.read(count);
               const { path, query } = parseHttpRequest(data);
 
@@ -140,18 +177,38 @@ function startCallbackServer(): Promise<void> {
                 const error = query.get("error");
 
                 if (error) {
-                  responseBody = buildHttpResponse(200, "OK", "text/html", errorHTML(error));
+                  responseBody = buildHttpResponse(
+                    200,
+                    "OK",
+                    "text/html",
+                    errorHTML(error),
+                  );
                   pendingReject?.(new Error(error));
                   clearPending();
                 } else if (code && state && state === pendingState) {
-                  responseBody = buildHttpResponse(200, "OK", "text/html", successHTML());
+                  responseBody = buildHttpResponse(
+                    200,
+                    "OK",
+                    "text/html",
+                    successHTML(),
+                  );
                   pendingResolve?.(code);
                   clearPending();
                 } else {
-                  responseBody = buildHttpResponse(400, "Bad Request", "text/html", errorHTML("Invalid callback"));
+                  responseBody = buildHttpResponse(
+                    400,
+                    "Bad Request",
+                    "text/html",
+                    errorHTML("Invalid callback"),
+                  );
                 }
               } else {
-                responseBody = buildHttpResponse(404, "Not Found", "text/plain", "Not Found");
+                responseBody = buildHttpResponse(
+                  404,
+                  "Not Found",
+                  "text/plain",
+                  "Not Found",
+                );
               }
 
               const encoded = new TextEncoder().encode(responseBody);
@@ -169,7 +226,11 @@ function startCallbackServer(): Promise<void> {
 
       resolve();
     } catch (err: any) {
-      reject(new Error(`Failed to start OAuth callback server on port ${OAUTH_PORT}: ${err?.message || err}`));
+      reject(
+        new Error(
+          `Failed to start OAuth callback server on port ${OAUTH_PORT}: ${err?.message || err}`,
+        ),
+      );
     }
   });
 }
@@ -192,7 +253,11 @@ async function exchangeCodeForTokens(
   issuer: string,
   clientId: string,
   redirectUri: string,
-): Promise<{ access_token: string; refresh_token: string; expires_in?: number }> {
+): Promise<{
+  access_token: string;
+  refresh_token: string;
+  expires_in?: number;
+}> {
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     code,
@@ -216,7 +281,11 @@ async function refreshToken(
   refreshTok: string,
   issuer: string,
   clientId: string,
-): Promise<{ access_token: string; refresh_token?: string; expires_in?: number }> {
+): Promise<{
+  access_token: string;
+  refresh_token?: string;
+  expires_in?: number;
+}> {
   const body = new URLSearchParams({
     grant_type: "refresh_token",
     refresh_token: refreshTok,
@@ -267,7 +336,9 @@ async function doOAuthPKCEFlow(
     pendingReject = reject;
     pendingState = state;
     timeoutId = setTimeout(() => {
-      pendingReject?.(new Error("OAuth authorization timed out after 5 minutes"));
+      pendingReject?.(
+        new Error("OAuth authorization timed out after 5 minutes"),
+      );
       stopServer();
     }, OAUTH_TIMEOUT_MS);
   });
@@ -275,7 +346,13 @@ async function doOAuthPKCEFlow(
   Zotero.launchURL(authUrl.toString());
   const code = await codePromise;
 
-  const tokens = await exchangeCodeForTokens(code, verifier, issuer, clientId, REDIRECT_URI);
+  const tokens = await exchangeCodeForTokens(
+    code,
+    verifier,
+    issuer,
+    clientId,
+    REDIRECT_URI,
+  );
   const extra = extractExtra?.(tokens.access_token) ?? {};
 
   await setCredential(credentialKey, {
@@ -306,9 +383,14 @@ export async function startOpenAIOAuth(): Promise<void> {
 
 export async function refreshOpenAIToken(): Promise<string> {
   const cred = getCredential("openai-oauth");
-  if (!cred || cred.type !== "oauth") throw new Error("No OpenAI OAuth credential");
+  if (!cred || cred.type !== "oauth")
+    throw new Error("No OpenAI OAuth credential");
 
-  const data = await refreshToken(cred.refresh, OPENAI_ISSUER, OPENAI_CLIENT_ID);
+  const data = await refreshToken(
+    cred.refresh,
+    OPENAI_ISSUER,
+    OPENAI_CLIENT_ID,
+  );
   const accountId = extractAccountId(data.access_token);
 
   await setCredential("openai-oauth", {
@@ -321,8 +403,12 @@ export async function refreshOpenAIToken(): Promise<string> {
   return data.access_token;
 }
 
-export function cancelOAuthFlow(): void { stopServer(); }
-export function signOutOpenAI(): void { removeCredential("openai-oauth"); }
+export function cancelOAuthFlow(): void {
+  stopServer();
+}
+export function signOutOpenAI(): void {
+  removeCredential("openai-oauth");
+}
 export function isOpenAIOAuthActive(): boolean {
   const c = getCredential("openai-oauth");
   return c !== null && c.type === "oauth";
@@ -330,7 +416,8 @@ export function isOpenAIOAuthActive(): boolean {
 
 export async function getOpenAIAccessToken(): Promise<string> {
   const cred = getCredential("openai-oauth");
-  if (!cred || cred.type !== "oauth") throw new Error("Not signed in with OpenAI");
+  if (!cred || cred.type !== "oauth")
+    throw new Error("Not signed in with OpenAI");
   if (cred.expires < Date.now() + 60_000) return refreshOpenAIToken();
   return cred.access;
 }
@@ -347,9 +434,12 @@ export const OPENAI_CODEX_ENDPOINT = CODEX_API_ENDPOINT;
 const ANTHROPIC_CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
 const ANTHROPIC_AUTH_URL = "https://claude.ai/oauth/authorize";
 const ANTHROPIC_TOKEN_URL = "https://console.anthropic.com/v1/oauth/token";
-const ANTHROPIC_REDIRECT_URI = "https://console.anthropic.com/oauth/code/callback";
-const ANTHROPIC_SCOPES = "org:create_api_key user:profile user:inference user:sessions:claude_code";
-export const ANTHROPIC_OAUTH_API_ENDPOINT = "https://api.anthropic.com/v1/messages?beta=true";
+const ANTHROPIC_REDIRECT_URI =
+  "https://console.anthropic.com/oauth/code/callback";
+const ANTHROPIC_SCOPES =
+  "org:create_api_key user:profile user:inference user:sessions:claude_code";
+export const ANTHROPIC_OAUTH_API_ENDPOINT =
+  "https://api.anthropic.com/v1/messages?beta=true";
 
 export async function startAnthropicOAuth(promptWindow: Window): Promise<void> {
   const { verifier, challenge } = await generatePKCE();
@@ -414,7 +504,8 @@ function promptForCode(win: Window): Promise<string | null> {
 
 export async function refreshAnthropicToken(): Promise<string> {
   const cred = getCredential("anthropic-oauth");
-  if (!cred || cred.type !== "oauth") throw new Error("No Anthropic OAuth credential");
+  if (!cred || cred.type !== "oauth")
+    throw new Error("No Anthropic OAuth credential");
 
   const xhr = await Zotero.HTTP.request("POST", ANTHROPIC_TOKEN_URL, {
     body: JSON.stringify({
@@ -438,7 +529,9 @@ export async function refreshAnthropicToken(): Promise<string> {
   return data.access_token;
 }
 
-export function signOutAnthropic(): void { removeCredential("anthropic-oauth"); }
+export function signOutAnthropic(): void {
+  removeCredential("anthropic-oauth");
+}
 export function isAnthropicOAuthActive(): boolean {
   const c = getCredential("anthropic-oauth");
   return c !== null && c.type === "oauth";
@@ -446,7 +539,8 @@ export function isAnthropicOAuthActive(): boolean {
 
 export async function getAnthropicAccessToken(): Promise<string> {
   const cred = getCredential("anthropic-oauth");
-  if (!cred || cred.type !== "oauth") throw new Error("Not signed in with Anthropic");
+  if (!cred || cred.type !== "oauth")
+    throw new Error("Not signed in with Anthropic");
   if (cred.expires < Date.now() + 60_000) return refreshAnthropicToken();
   return cred.access;
 }

@@ -1,16 +1,32 @@
 import { config } from "../package.json";
 import {
-  registerOAuthCallback, unregisterOAuthCallback,
-  startOpenAIOAuth, signOutOpenAI, isOpenAIOAuthActive,
-  startAnthropicOAuth, signOutAnthropic, isAnthropicOAuthActive,
+  registerOAuthCallback,
+  unregisterOAuthCallback,
+  startOpenAIOAuth,
+  signOutOpenAI,
+  isOpenAIOAuthActive,
+  startAnthropicOAuth,
+  signOutAnthropic,
+  isAnthropicOAuthActive,
   cancelOAuthFlow,
 } from "./modules/auth/oauth";
 
 let openaiOAuthInFlight = false;
-import { setCredential, getCredential, removeCredential, migrateFromPrefs } from "./modules/auth/storage";
-import { registerChatPanelSection, unregisterChatPanelSection } from "./modules/panel/chatPanel";
+import {
+  setCredential,
+  getCredential,
+  removeCredential,
+  migrateFromPrefs,
+} from "./modules/auth/storage";
+import {
+  registerChatPanelSection,
+  unregisterChatPanelSection,
+} from "./modules/panel/chatPanel";
 import { registerPrefsScripts } from "./modules/preferenceScript";
-import { registerSmartActions, registerSmartActionsShortcut } from "./modules/reader/smartActions";
+import {
+  registerSmartActions,
+  registerSmartActionsShortcut,
+} from "./modules/reader/smartActions";
 import { getString, initLocale } from "./utils/locale";
 
 function registerPreferencePane() {
@@ -46,8 +62,12 @@ function updateOAuthStatuses(win: Window) {
 
 function updateAnthropicOAuthStatus(win: Window) {
   const doc = win.document;
-  const statusEl = doc.getElementById(`zotero-prefpane-${config.addonRef}-anthropic-oauth-status`);
-  const btnEl = doc.getElementById(`zotero-prefpane-${config.addonRef}-anthropic-oauth-btn`) as HTMLButtonElement | null;
+  const statusEl = doc.getElementById(
+    `zotero-prefpane-${config.addonRef}-anthropic-oauth-status`,
+  );
+  const btnEl = doc.getElementById(
+    `zotero-prefpane-${config.addonRef}-anthropic-oauth-btn`,
+  ) as HTMLButtonElement | null;
 
   if (isAnthropicOAuthActive()) {
     if (statusEl) statusEl.textContent = "✓ Signed in with Claude";
@@ -66,8 +86,12 @@ function updateAnthropicOAuthStatus(win: Window) {
 
 function updateOpenAIOAuthStatus(win: Window) {
   const doc = win.document;
-  const statusEl = doc.getElementById(`zotero-prefpane-${config.addonRef}-openai-oauth-status`);
-  const btnEl = doc.getElementById(`zotero-prefpane-${config.addonRef}-openai-oauth-btn`) as HTMLButtonElement | null;
+  const statusEl = doc.getElementById(
+    `zotero-prefpane-${config.addonRef}-openai-oauth-status`,
+  );
+  const btnEl = doc.getElementById(
+    `zotero-prefpane-${config.addonRef}-openai-oauth-btn`,
+  ) as HTMLButtonElement | null;
 
   if (isOpenAIOAuthActive()) {
     if (statusEl) statusEl.textContent = "✓ Signed in with ChatGPT";
@@ -86,7 +110,9 @@ function updateOpenAIOAuthStatus(win: Window) {
 
 function loadApiKeyIntoField(win: Window, providerId: string) {
   const doc = win.document;
-  const field = doc.getElementById(`zotero-prefpane-${config.addonRef}-${providerId}-key`) as HTMLInputElement | null;
+  const field = doc.getElementById(
+    `zotero-prefpane-${config.addonRef}-${providerId}-key`,
+  ) as HTMLInputElement | null;
   if (!field) return;
   const cred = getCredential(providerId);
   if (cred?.type === "api") {

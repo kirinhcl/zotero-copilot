@@ -90,7 +90,8 @@
 }
 
 .zc-message-bubble code {
-  font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-family:
+    ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 .zc-message-bubble blockquote {

@@ -40,17 +40,18 @@ Sidebar panel for multi-turn AI conversations per paper with slash commands.
 Open Zotero Settings and go to Zotero Copilot.
 
 All four providers are listed there:
+
 - OpenAI and Anthropic: Use OAuth with your ChatGPT or Claude subscription, or an API key.
 - Gemini and Custom: Use an API key only.
 
 ## Supported Providers
 
-| Provider | Auth Options |
-|----------|-------------|
-| OpenAI | ChatGPT subscription (OAuth) or API key |
-| Anthropic | Claude subscription (OAuth) or API key |
-| Google Gemini | API key |
-| Custom | API key (any OpenAI-compatible endpoint) |
+| Provider      | Auth Options                             |
+| ------------- | ---------------------------------------- |
+| OpenAI        | ChatGPT subscription (OAuth) or API key  |
+| Anthropic     | Claude subscription (OAuth) or API key   |
+| Google Gemini | API key                                  |
+| Custom        | API key (any OpenAI-compatible endpoint) |
 
 Model availability is determined by each provider and your account/subscription tier. You can enter any model name in the settings.
 
