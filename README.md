@@ -5,7 +5,17 @@
 
 AI-powered research assistant for Zotero 7, inspired by VS Code Copilot.
 
-![screenshot](docs/screenshot.png)
+### Smart Actions
+
+Select text in the PDF reader to Explain, Summarize, Translate, or Take Note.
+
+![Smart Actions](img/Screenshot%202026-03-04%20at%2020.04.07.png)
+
+### Chat Panel
+
+Sidebar panel for multi-turn AI conversations per paper with slash commands.
+
+![Chat Panel](img/Screenshot%202026-03-04%20at%2020.04.34.png)
 
 ## Features
 
@@ -35,11 +45,13 @@ All four providers are listed there:
 
 ## Supported Models
 
-- OpenAI (OAuth/Codex): o4-mini, o3, gpt-4o, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano.
-- Model access via OpenAI API key: Any model from the OpenAI API.
-- Anthropic: claude-sonnet-4-20250514 and others.
-- Gemini: gemini-2.0-flash and others.
-- Custom: Any OpenAI-compatible model.
+| Provider | Auth Mode | Models |
+|----------|-----------|--------|
+| OpenAI | OAuth (ChatGPT subscription) | o4-mini, o3, gpt-4o, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano |
+| OpenAI | API key | Any model from the OpenAI API |
+| Anthropic | OAuth or API key | claude-sonnet-4-20250514, claude-opus-4, etc. |
+| Google Gemini | API key | gemini-2.0-flash, gemini-2.5-pro, etc. |
+| Custom | API key | Any OpenAI-compatible model |
 
 ## Build from Source
 
